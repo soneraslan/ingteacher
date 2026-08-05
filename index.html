@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IngTeacher</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="workspace" aria-label="Telaffuz calisma alani">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">IngTeacher</p>
+            <h1>Telaffuz kocu</h1>
+          </div>
+          <div class="score" aria-live="polite">
+            <span id="scoreValue">0%</span>
+            <small>uyum</small>
+          </div>
+        </header>
+
+        <nav class="sourceTabs" aria-label="Calisma turu">
+          <button id="textTab" class="sourceTab active" type="button" aria-selected="true">Metin</button>
+          <button id="imageTab" class="sourceTab" type="button" aria-selected="false">Resim</button>
+        </nav>
+
+        <section id="textPanel" class="reader sourcePanel" aria-label="Okuma metni">
+          <div class="readerHeader">
+            <label for="readingText">Okuma metni</label>
+            <div class="controls">
+              <button id="splitWords" class="iconText" type="button">Kelimeler</button>
+              <button id="splitSentences" class="iconText" type="button">Cumleler</button>
+            </div>
+          </div>
+          <div class="textPicker">
+            <label>
+              Kayitli metinler
+              <select id="savedTexts">
+                <option value="">Metin secin</option>
+              </select>
+            </label>
+            <label>
+              Metin adi
+              <input id="textTitle" type="text" placeholder="Ornek: Gunluk konusma 1" />
+            </label>
+          </div>
+          <div class="fileImport">
+            <label for="sourceFile">
+              Bilgisayardan dosya sec
+              <input
+                id="sourceFile"
+                type="file"
+                accept=".pdf,.docx,.txt,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              />
+            </label>
+            <p id="fileStatus">PDF, DOCX veya TXT dosyasi secebilirsin.</p>
+          </div>
+          <div class="documentNav" aria-label="Dosya bolumleri">
+            <button id="prevDocumentPart" class="secondary" type="button">Onceki metin</button>
+            <p id="documentPartStatus">Dosyadan metin bekleniyor.</p>
+            <button id="nextDocumentPart" class="secondary" type="button">Sonraki metin</button>
+          </div>
+          <textarea id="readingText" spellcheck="false" placeholder="Calismak istedigin metni buraya yapistir veya yaz."></textarea>
+          <div class="readerActions">
+            <button id="loadSample" class="secondary" type="button">Ornek metin</button>
+            <button id="saveText" class="secondary" type="button">Metni kaydet</button>
+            <button id="deleteText" class="secondary danger" type="button">Secileni sil</button>
+            <button id="buildPractice" type="button">Calismayi hazirla</button>
+          </div>
+        </section>
+
+        <section id="imagePanel" class="reader imageReader sourcePanel" aria-label="Resim anlatma calismasi" hidden>
+          <div class="readerHeader">
+            <div>
+              <strong>Resim anlatma</strong>
+              <p class="panelHint">Bir resim sec; yerel Ollama modeli İngilizce ornek aciklama hazirlasin.</p>
+            </div>
+          </div>
+          <div class="imagePicker">
+            <label for="imageFile">
+              Bilgisayardan resim sec
+              <input id="imageFile" type="file" accept="image/*" />
+            </label>
+            <p id="imageStatus">JPG, PNG, WEBP veya BMP resmi secebilirsin.</p>
+          </div>
+          <div id="imageStage" class="imageStage">
+            <img id="selectedImage" alt="Secilen calisma resmi" hidden />
+            <p id="imageEmpty">Calismak icin bir resim sec.</p>
+          </div>
+          <div class="imageDescriptionGrid">
+            <div class="imageDescriptionBox">
+              <span>AI ornek aciklamasi</span>
+              <p id="imageDescription">Once resmi kendi cumlelerinle anlat; AI ornegini istersen sonra hazirla.</p>
+            </div>
+            <div class="imageDescriptionBox userDescriptionBox">
+              <label for="imageUserText">Senin İngilizce anlatimin</label>
+              <textarea id="imageUserText" rows="5" placeholder="Kaydet'e basip resmi İngilizce anlat veya buraya yaz: In this image, I can see..."></textarea>
+              <p class="panelHint">Konusman otomatik olarak metne donusturulur; degerlendirmeden once duzeltebilirsin.</p>
+            </div>
+          </div>
+          <div class="imageEvaluationBox">
+            <span>AI degerlendirmesi</span>
+            <p id="imageEvaluation">Kendi anlatimini yaz veya kaydet, sonra AI degerlendirmesini baslat.</p>
+          </div>
+          <div class="readerActions">
+            <button id="clearImage" class="secondary danger" type="button" disabled>Resmi kaldir</button>
+            <button id="generateImagePractice" class="secondary" type="button" disabled>AI ornegini goster</button>
+            <button id="evaluateImageDescription" type="button" disabled>Anlatimimi AI ile degerlendir</button>
+          </div>
+        </section>
+
+        <section class="practice" aria-label="Anlik telaffuz denetimi">
+          <div class="prompt">
+            <span class="position" id="positionLabel">1 / 1</span>
+            <p id="currentPrompt">Calismayi hazirlayin.</p>
+          </div>
+          <div id="segments" class="segments" aria-live="polite"></div>
+          <div class="recorder">
+            <button id="prevSegment" class="round" type="button" title="Onceki">&lsaquo;</button>
+            <button id="recordButton" class="record" type="button">Kaydet</button>
+            <button id="nextSegment" class="round" type="button" title="Sonraki">&rsaquo;</button>
+            <button id="skipSegment" class="secondary skip" type="button">Atla</button>
+            <button id="speakButton" class="secondary" type="button">Ornek seslendir</button>
+          </div>
+          <div class="micPanel" aria-label="Mikrofon durumu">
+            <button id="micTestButton" class="secondary" type="button">Mikrofonu test et</button>
+            <div class="meter" aria-hidden="true">
+              <span id="micLevel"></span>
+            </div>
+            <p id="micStatus">Mikrofon testi bekliyor.</p>
+          </div>
+          <div class="feedback">
+            <div>
+              <span>Algilanan</span>
+              <p id="heardText">Henuz kayit yok.</p>
+            </div>
+            <div>
+              <span>Geri bildirim</span>
+              <p id="feedbackText">Metni parcalara ayirip okumaya baslayin.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <aside class="settings" aria-label="Model ayarlari">
+        <h2>Yerel model ayarlari</h2>
+        <label>
+          ASR endpoint
+          <input id="asrEndpoint" type="url" placeholder="http://localhost:8000/transcribe" />
+        </label>
+        <label>
+          TTS endpoint
+          <input id="ttsEndpoint" type="url" placeholder="http://localhost:8001/speak" />
+        </label>
+        <label>
+          Gorsel Ollama endpoint
+          <input id="imageOllamaEndpoint" type="url" value="http://127.0.0.1:11434/api/generate" />
+        </label>
+        <label>
+          Gorsel modeli
+          <input id="visionModel" type="text" value="llava" placeholder="llava" />
+        </label>
+        <label>
+          Dil
+          <select id="language">
+            <option value="en-US">English (US)</option>
+            <option value="en-GB">English (UK)</option>
+            <option value="tr-TR">Turkce</option>
+          </select>
+        </label>
+        <label>
+          Esik <output id="thresholdValue" for="threshold">75%</output>
+          <input id="threshold" type="range" min="45" max="95" value="75" />
+        </label>
+        <div class="rateControl">
+          <span>Seslendirme hizi</span>
+          <div class="stepper">
+            <button id="decreaseSpeechRate" class="secondary" type="button">-</button>
+            <strong id="speechRateValue">0.80x</strong>
+            <button id="increaseSpeechRate" class="secondary" type="button">+</button>
+          </div>
+        </div>
+        <div class="toggles">
+          <label><input id="autoAdvance" type="checkbox" checked /> Dogruysa ilerle</label>
+          <label><input id="browserFallback" type="checkbox" checked /> Tarayici yedegi</label>
+        </div>
+        <button id="clearSession" class="secondary" type="button">Oturumu sifirla</button>
+        <p class="hint">
+          Endpoint bos kalirsa kayit icin Web Speech API, seslendirme icin tarayicinin speechSynthesis ozelligi denenir.
+        </p>
+      </aside>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+    <script src="./app.js?v=20260805-image-manual-stop"></script>
+  </body>
+</html>

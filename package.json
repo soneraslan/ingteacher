@@ -1,0 +1,9 @@
+{
+  "name": "ingteacher",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "python -m http.server 5173 --bind 127.0.0.1",
+    "start": "npm run dev"
+  }
+}
