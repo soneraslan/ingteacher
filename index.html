@@ -23,6 +23,8 @@
         <nav class="sourceTabs" aria-label="Calisma turu">
           <button id="textTab" class="sourceTab active" type="button" aria-selected="true">Metin</button>
           <button id="imageTab" class="sourceTab" type="button" aria-selected="false">Resim</button>
+          <button id="aiTextTab" class="sourceTab" type="button" aria-selected="false">AI Metin</button>
+          <button id="trainingTab" class="sourceTab" type="button" aria-selected="false">Egitim modu</button>
         </nav>
 
         <section id="textPanel" class="reader sourcePanel" aria-label="Okuma metni">
@@ -110,6 +112,165 @@
           </div>
         </section>
 
+        <section id="aiTextPanel" class="reader aiTextReader sourcePanel" aria-label="Yerel AI metin uretimi" hidden>
+          <div class="readerHeader">
+            <div>
+              <strong>AI metin uretici</strong>
+              <p class="panelHint">Bilgisayarindaki Ollama modelleriyle istedigin dilde, tarzda ve uzunlukta calisma metni hazirla.</p>
+            </div>
+            <div class="ollamaPill">
+              <span id="ollamaDot" class="statusDot"></span>
+              <span id="ollamaStatus">Model kaynagi kontrol ediliyor...</span>
+            </div>
+          </div>
+          <div class="aiGrid">
+            <label>
+              Hedef dil
+              <select id="aiTargetLanguage">
+                <option value="Ingilizce" selected>Ingilizce</option>
+                <option value="Almanca">Almanca</option>
+                <option value="Fransizca">Fransizca</option>
+                <option value="Ispanyolca">Ispanyolca</option>
+                <option value="Rusca">Rusca</option>
+                <option value="Turkce">Turkce</option>
+              </select>
+            </label>
+            <label>
+              Zorluk (CEFR)
+              <select id="aiLevel">
+                <option value="A1" selected>A1 (Baslangic)</option>
+                <option value="A2">A2 (Temel)</option>
+                <option value="B1">B1 (Orta)</option>
+                <option value="B2">B2 (Orta ustu)</option>
+                <option value="C1">C1 (Ileri)</option>
+                <option value="C2">C2 (Usta)</option>
+              </select>
+            </label>
+            <label class="wide">
+              Metin tarzi / tonu
+              <select id="aiTone">
+                <option value="Arkadaşça / samimi (casual, friendly)" selected>Arkadaşça / samimi (casual, friendly)</option>
+                <option value="Gunluk / notr (neutral)">Gunluk / notr (neutral)</option>
+                <option value="Akademik (academic, formal)">Akademik (academic, formal)</option>
+                <option value="Hikaye (narrative / story)">Hikaye (narrative / story)</option>
+                <option value="Haber (journalistic / news)">Haber (journalistic / news)</option>
+              </select>
+            </label>
+            <label class="wide">
+              Kelime uzunlugu (yaklasik) <output id="aiWordCountValue" for="aiWordCount">150</output>
+              <input id="aiWordCount" type="range" min="50" max="600" step="10" value="150" />
+            </label>
+            <label class="wide">
+              Metin konusu
+              <input id="aiTopic" type="text" placeholder="Orn: saglikli beslenme, bir park gunu, uzay kesfi..." />
+            </label>
+            <label class="wide">
+              Model kaynagi
+              <select id="aiProvider" disabled aria-label="Model kaynagi: Ollama sunucusu">
+                <option value="ollama" selected>Ollama sunucusu (yerel modeller)</option>
+              </select>
+            </label>
+            <label class="wide">
+              Model
+              <span style="display:flex; gap:8px">
+                <select id="aiModel" style="flex:1">
+                  <option value="">Modeller yukleniyor...</option>
+                </select>
+                <button id="refreshAiModels" class="secondary" type="button" title="Model listesini yenile">Yenile</button>
+              </span>
+            </label>
+          </div>
+          <div class="aiActions">
+            <button id="generateAiText" type="button">Metni olustur</button>
+            <button id="downloadAiModel" class="secondary embeddedOnly" type="button" hidden>Modeli indir</button>
+            <button id="unloadAiModel" class="secondary embeddedOnly" type="button" disabled hidden>Modeli bosalt</button>
+            <button id="clearAiModelCache" class="secondary embeddedOnly" type="button" hidden>Onbellegi temizle</button>
+            <button id="stopAiText" class="secondary" type="button" disabled>Durdur</button>
+            <button id="useAiText" class="secondary" type="button" disabled>Calismaya al</button>
+            <button id="saveAiText" class="secondary" type="button" disabled>Kayitli metinlere ekle</button>
+          </div>
+          <p id="aiStatus" class="aiStatus">Ayarlari tamamlayip metni olustur.</p>
+          <p id="aiStorageInfo" class="aiStorageInfo embeddedOnly" hidden></p>
+          <progress id="aiDownloadProgress" class="aiProgress embeddedOnly" max="100" value="0" hidden></progress>
+          <div class="voiceRow">
+            <label>
+              Seslendirici
+              <select id="aiVoice"></select>
+            </label>
+            <label>
+              Cinsiyet
+              <select id="aiVoiceGender">
+                <option value="all" selected>Tumu</option>
+                <option value="female">Kadin</option>
+                <option value="male">Erkek</option>
+              </select>
+            </label>
+            <label>
+              Hiz <output id="aiVoiceRateValue" for="aiVoiceRate">1.0x</output>
+              <input id="aiVoiceRate" type="range" min="0.5" max="2" step="0.1" value="1" />
+            </label>
+            <label>
+              Ton <output id="aiVoicePitchValue" for="aiVoicePitch">1.0</output>
+              <input id="aiVoicePitch" type="range" min="0.5" max="2" step="0.1" value="1" />
+            </label>
+            <button id="speakAiText" class="secondary" type="button">Sesli oku</button>
+            <button id="previewAiVoice" class="secondary" type="button">Dene</button>
+          </div>
+          <textarea id="aiOutput" spellcheck="false" placeholder="Olusturulan metin burada gorunecek..."></textarea>
+          <p id="aiCounter" class="aiCounter">0 kelime - 0 karakter</p>
+        </section>
+
+        <section id="trainingPanel" class="reader trainingReader sourcePanel" aria-label="Uyarlanabilir İngilizce egitim modu" hidden>
+          <div class="readerHeader">
+            <div>
+              <strong>Uyarlanabilir konusma egitimi</strong>
+              <p class="panelHint">Ajan soruyu sesli sorar, yazdigin veya soyledigin cevabi degerlendirir ve seviyene kendisi karar verir.</p>
+            </div>
+            <div class="trainingLevelPill">
+              <span>Seviye</span>
+              <strong id="trainingLevel">A1</strong>
+              <small id="trainingSpeed">0.65x</small>
+            </div>
+          </div>
+          <div class="trainingOverview">
+            <div>
+              <span>Odak</span>
+              <p id="trainingFocus">Gunluk, somut konular ve kisa cevaplar</p>
+            </div>
+            <div>
+              <span>Seviye ilerlemesi</span>
+              <p id="trainingProgress">Ajan cevaplarini izleyerek karar verir.</p>
+            </div>
+          </div>
+          <div class="trainingModelRow">
+            <label for="trainingModel">
+              Egitimde kullanilacak Ollama modeli
+              <select id="trainingModel">
+                <option value="">Modeller yukleniyor...</option>
+              </select>
+            </label>
+            <button id="trainingRefresh" class="secondary" type="button">Modelleri yenile</button>
+          </div>
+          <div id="trainingConversation" class="trainingConversation" aria-live="polite">
+            <p class="trainingEmpty">Baslamak icin “Ilk soruyu al” dugmesine bas. Ajan her turda yeni bir konu secer.</p>
+          </div>
+          <label class="trainingAnswerLabel" for="trainingAnswer">
+            Cevabin (İngilizce)
+            <textarea id="trainingAnswer" rows="4" spellcheck="true" placeholder="Cevabini yaz veya Kaydet ile soyle; degerlendirmeden once metni duzeltebilirsin..."></textarea>
+          </label>
+          <div class="readerActions trainingActions">
+            <button id="trainingStart" type="button">Ilk soruyu al</button>
+            <button id="trainingListen" class="secondary" type="button" disabled>Soruyu dinle</button>
+            <button id="trainingRecord" class="secondary" type="button">Kaydet</button>
+            <button id="trainingSend" type="button" disabled>Tamam, degerlendir</button>
+            <button id="trainingReset" class="secondary danger" type="button">Egitimi sifirla</button>
+            <button id="trainingBookmark" class="secondary" type="button">Kaldigim yeri isaretle</button>
+            <button id="trainingRestore" class="secondary" type="button">Yedegi geri yukle</button>
+            <input id="trainingBackupFile" type="file" accept=".md,text/markdown,text/plain" hidden />
+          </div>
+          <p id="trainingStatus" class="aiStatus">A1 ile basla; cevaplar zorlastikca ajan daha uzun ve soyut sorular sorar.</p>
+        </section>
+
         <section class="practice" aria-label="Anlik telaffuz denetimi">
           <div class="prompt">
             <span class="position" id="positionLabel">1 / 1</span>
@@ -162,6 +323,10 @@
           <input id="visionModel" type="text" value="llava" placeholder="llava" />
         </label>
         <label>
+          Metin Ollama endpoint
+          <input id="textOllamaEndpoint" type="url" value="http://127.0.0.1:11434/api/generate" />
+        </label>
+        <label>
           Dil
           <select id="language">
             <option value="en-US">English (US)</option>
@@ -188,11 +353,12 @@
         <button id="clearSession" class="secondary" type="button">Oturumu sifirla</button>
         <p class="hint">
           Endpoint bos kalirsa kayit icin Web Speech API, seslendirme icin tarayicinin speechSynthesis ozelligi denenir.
+          AI Metin ve Egitim modu, bilgisayarinizda yuklu Ollama modellerini kullanir.
         </p>
       </aside>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
-    <script src="./app.js?v=20260805-image-manual-stop"></script>
+    <script src="./app.js?v=20261007-reliable-ollama"></script>
   </body>
 </html>

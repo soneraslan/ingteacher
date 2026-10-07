@@ -1,0 +1,12 @@
+# IngTeacher + Anlatim modulu Python gereksinimleri
+# Ana IngTeacher sunucusu Python standart kutuphanesindeki http.server'i kullanir.
+# PDF ve DOCX okuma kutuphaneleri tarayicida CDN uzerinden yuklenir.
+
+# Anlatim modulu arayuzu
+gradio>=5.0,<7.0
+
+# Yerel Ollama HTTP baglantisi
+requests>=2.31,<3.0
+
+# Ses kaydini metne donusturme
+faster-whisper>=1.0,<2.0

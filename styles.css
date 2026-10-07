@@ -329,6 +329,317 @@ h2 {
   white-space: pre-wrap;
 }
 
+/* ---------- AI METIN URETICI ---------- */
+.ollamaPill {
+  align-items: center;
+  background: #f6faf8;
+  border: 1px solid #d5e2dc;
+  border-radius: 999px;
+  color: #344940;
+  display: inline-flex;
+  flex: none;
+  font-size: 13px;
+  font-weight: 800;
+  gap: 8px;
+  padding: 8px 14px;
+}
+
+.statusDot {
+  background: #b3261e;
+  border-radius: 50%;
+  flex: none;
+  height: 10px;
+  width: 10px;
+}
+
+.statusDot.online {
+  background: #14765a;
+}
+
+.aiGrid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 12px;
+}
+
+.aiGrid label {
+  color: #344940;
+  display: grid;
+  font-weight: 800;
+  gap: 8px;
+}
+
+.aiGrid label.wide {
+  grid-column: 1 / -1;
+}
+
+.aiGrid output {
+  color: #14765a;
+  font-weight: 900;
+  justify-self: end;
+}
+
+.aiActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.aiStatus {
+  color: #587269;
+  font-size: 13px;
+  font-weight: 700;
+  min-height: 20px;
+}
+
+.aiStatus.ok {
+  color: #14765a;
+}
+
+.aiStatus.error {
+  color: #b3261e;
+}
+
+/* ---------- GOMULU MODEL INDIRME ---------- */
+.aiProgress {
+  appearance: none;
+  -webkit-appearance: none;
+  background: #e4ece8;
+  border: none;
+  border-radius: 999px;
+  display: block;
+  height: 10px;
+  margin: 0 0 10px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.aiProgress::-webkit-progress-bar {
+  background: #e4ece8;
+  border-radius: 999px;
+}
+
+.aiProgress::-webkit-progress-value {
+  background: linear-gradient(90deg, #14765a, #2fa37c);
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+.aiProgress::-moz-progress-bar {
+  background: linear-gradient(90deg, #14765a, #2fa37c);
+  border-radius: 999px;
+}
+
+.aiProgress[hidden] {
+  display: none;
+}
+
+.aiStorageInfo {
+  color: #6a7d76;
+  font-size: 12px;
+  font-weight: 700;
+  margin: -4px 0 10px;
+}
+
+.aiStorageInfo[hidden] {
+  display: none;
+}
+
+.embeddedOnly {
+  display: none !important;
+}
+
+select:disabled,
+input:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.voiceRow {
+  align-items: end;
+  background: #f8faf9;
+  border: 1px solid #dbe5df;
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 2fr) minmax(110px, 1fr) minmax(120px, 1fr) minmax(120px, 1fr) auto auto;
+  margin: 10px 0 12px;
+  padding: 12px;
+}
+
+.voiceRow label {
+  color: #344940;
+  display: grid;
+  font-size: 13px;
+  font-weight: 800;
+  gap: 6px;
+}
+
+.voiceRow output {
+  color: #14765a;
+  font-weight: 900;
+}
+
+#aiOutput {
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 220px;
+}
+
+.aiTextReader.generating #aiOutput {
+  border-color: #1d6d86;
+}
+
+.aiCounter {
+  color: #587269;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+/* ---------- UYARLANABILIR EGITIM MODU ---------- */
+.trainingReader {
+  background: #ffffff;
+}
+
+.trainingActions {
+  justify-content: flex-start;
+}
+
+.trainingLevelPill {
+  align-items: center;
+  background: #e8f3ef;
+  border: 1px solid #b9d9cb;
+  border-radius: 999px;
+  color: #14533f;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 900;
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+.trainingLevelPill strong {
+  font-size: 18px;
+}
+
+.trainingLevelPill small {
+  color: #547268;
+  font-size: 12px;
+}
+
+.trainingOverview {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 12px;
+}
+
+.trainingOverview > div,
+.trainingConversation {
+  background: #f8faf9;
+  border: 1px solid #dbe5df;
+  border-radius: 8px;
+}
+
+.trainingOverview > div {
+  padding: 12px;
+}
+
+.trainingModelRow {
+  align-items: end;
+  background: #f8faf9;
+  border: 1px solid #dbe5df;
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin-bottom: 12px;
+  padding: 12px;
+}
+
+.trainingModelRow label {
+  color: #344940;
+  display: grid;
+  font-size: 13px;
+  font-weight: 800;
+  gap: 6px;
+}
+
+.trainingOverview span,
+.trainingAnswerLabel {
+  color: #607870;
+  display: block;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.trainingOverview p {
+  color: #263d35;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+  margin-top: 6px;
+  text-transform: none;
+}
+
+.trainingConversation {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+  max-height: 360px;
+  overflow: auto;
+  padding: 12px;
+}
+
+.trainingMessage {
+  border-radius: 8px;
+  line-height: 1.5;
+  padding: 10px 12px;
+  white-space: pre-wrap;
+}
+
+.trainingMessage.coach {
+  background: #e8f3ef;
+  border-left: 4px solid #14765a;
+  color: #1a4938;
+}
+
+.trainingMessage.learner {
+  background: #e8f1f7;
+  border-left: 4px solid #1d6d86;
+  color: #234653;
+}
+
+.trainingMessage strong {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.trainingEmpty {
+  color: #587269;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.trainingAnswerLabel {
+  display: grid;
+  gap: 8px;
+}
+
+.trainingAnswerLabel textarea {
+  background: #fff;
+  color: #17211d;
+  min-height: 104px;
+  text-transform: none;
+}
+
 .documentNav {
   align-items: center;
   background: #f6faf8;
@@ -640,7 +951,23 @@ input[type="range"] {
     grid-template-columns: 1fr;
   }
 
+  .aiGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .voiceRow {
+    grid-template-columns: 1fr;
+  }
+
   .imageDescriptionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .trainingOverview {
+    grid-template-columns: 1fr;
+  }
+
+  .trainingModelRow {
     grid-template-columns: 1fr;
   }
 

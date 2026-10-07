@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "python -m http.server 5173 --bind 127.0.0.1",
-    "start": "npm run dev"
+    "dev": "python server.py",
+    "start": "npm run dev",
+    "test": "node --experimental-vm-modules .check-flow.js",
+    "test:dom": "node .check-dom.js"
   }
 }
